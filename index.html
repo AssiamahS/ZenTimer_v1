@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Timer</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        .container {
+            text-align: center;
+        }
+        .timer {
+            font-size: 5rem;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="timer" id="timer">00:00</div>
+        <div class="buttons">
+            <button onclick="addTime(5)">Add 5 min</button>
+            <button onclick="addTime(10)">Add 10 min</button>
+            <button onclick="addTime(25)">Add 25 min</button>
+            <button onclick="toggleZen()">Zen Mode</button>
+        </div>
+    </div>
+
+    <script>
+        let time = 0;
+        let interval;
+
+        function updateTimer() {
+            const minutes = String(Math.floor(time / 60)).padStart(2, '0');
+            const seconds = String(time % 60).padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        }
+
+        function addTime(minutes) {
+            time += minutes * 60;
+            if (!interval) {
+                interval = setInterval(() => {
+                    if (time > 0) {
+                        time--;
+                        updateTimer();
+                    } else {
+                        clearInterval(interval);
+                        interval = null;
+                        flashScreen();
+                    }
+                }, 1000);
+            }
+            updateTimer();
+        }
+
+        function toggleZen() {
+            const body = document.body;
+            if (body.style.backgroundColor === 'black') {
+                body.style.backgroundColor = 'white';
+                body.style.color = 'black';
+            } else {
+                body.style.backgroundColor = 'black';
+                body.style.color = 'white';
+            }
+        }
+
+        function flashScreen() {
+            let flashes = 0;
+            const flashInterval = setInterval(() => {
+                document.body.style.backgroundColor = document.body.style.backgroundColor === 'black' ? 'white' : 'black';
+                document.body.style.color = document.body.style.color === 'white' ? 'black' : 'white';
+                flashes++;
+                if (flashes >= 10) {
+                    clearInterval(flashInterval);
+                }
+            }, 500);
+        }
+    </script>
+</body>
+</html>
